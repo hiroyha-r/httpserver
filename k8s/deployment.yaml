@@ -16,9 +16,8 @@ spec:
     spec:
       containers:
         - name: httpserver
-          # Replace OWNER and tag with your GHCR image (e.g. ghcr.io/myorg/httpserver:main).
-          image: ghcr.io/OWNER/httpserver:latest
-          imagePullPolicy: IfNotPresent
+          image: ghcr.io/hiroyha-r/httpserver:latest
+          imagePullPolicy: Always
           args: ["--port", "8081,8082,8083,8084"]
           ports:
             - name: http-8081
