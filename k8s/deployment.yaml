@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: httpserver
+  labels:
+    app: httpserver
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: httpserver
+  template:
+    metadata:
+      labels:
+        app: httpserver
+    spec:
+      containers:
+        - name: httpserver
+          # Replace OWNER and tag with your GHCR image (e.g. ghcr.io/myorg/httpserver:main).
+          image: ghcr.io/OWNER/httpserver:latest
+          imagePullPolicy: IfNotPresent
+          args: ["--port", "8081,8082,8083,8084"]
+          ports:
+            - name: http-8081
+              containerPort: 8081
+              protocol: TCP
+            - name: http-8082
+              containerPort: 8082
+              protocol: TCP
+            - name: ready
+              containerPort: 8083
+              protocol: TCP
+            - name: live
+              containerPort: 8084
+              protocol: TCP
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 8083
+            initialDelaySeconds: 2
+            periodSeconds: 5
+            timeoutSeconds: 2
+            failureThreshold: 3
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 8084
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 2
+            failureThreshold: 3
